@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Profiles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#121212',
+                            darker: '#0a0a0a',
+                            card: '#1c1c1c',
+                            gold: '#C5A059',
+                            goldLight: '#E2C37A',
+                            goldDark: '#8A6D3B',
+                            text: '#D1D5DB',
+                            textLight: '#F3F4F6'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif JP"', 'serif'],
+                    },
+                    aspectRatio: {
+                        'portrait': '1536 / 2040',
+                    },
+                    animation: {
+                        'blob': 'blob 15s infinite alternate',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: "Noto Serif JP", serif;
+            background-color: #0a0a0a;
+            color: #D1D5DB;
+        }
+
+        /* カスタムスクロールバー */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #C5A059; 
+        }
+
+        /* モーダル表示のアニメーション */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        .modal-exit {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .modal-exit-active {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.2s ease-in, transform 0.2s ease-in;
+        }
+
+        /* 画像ホバーエフェクト */
+        .char-card-img-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 1px solid transparent;
+            transition: border-color 0.3s ease;
+            pointer-events: none;
+        }
+        .char-card:hover .char-card-img-wrapper::after {
+            border-color: #C5A059;
+        }
+        
+        .r18-badge {
+            color: #ef4444; /* 赤色 */
+            font-size: 0.8em;
+            margin-left: 0.3em;
+            vertical-align: super;
+        }
+    </style>
+</head>
+<body class="min-h-screen selection:bg-brand-gold selection:text-brand-darker relative overflow-x-hidden text-brand-text">
+
+    <!-- ファンタジー風 背景エフェクト -->
+    <div class="fixed inset-0 z-[-1] bg-brand-darker overflow-hidden">
+        <!-- 漂う魔法の光（オーブ） -->
+        <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-900/20 blur-[100px] mix-blend-screen animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-brand-gold/10 blur-[120px] mix-blend-screen animate-blob" style="animation-delay: 2s;"></div>
+        <div class="absolute bottom-[-20%] left-[20%] w-[60vw] h-[60vw] rounded-full bg-purple-900/15 blur-[120px] mix-blend-screen animate-blob" style="animation-delay: 4s;"></div>
+        
+        <!-- 星屑/魔力粉のテクスチャ (微かな模様) -->
+        <div class="absolute inset-0 opacity-[0.04]" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23c5a059\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-20 max-w-6xl">
+        <!-- ヘッダー -->
+        <header class="text-center mb-16 relative">
+            <h1 class="text-4xl md:text-5xl font-bold text-brand-goldLight tracking-widest mb-4 drop-shadow-[0_0_15px_rgba(197,160,89,0.2)]">CHARACTERS</h1>
+            <div class="flex items-center justify-center gap-4">
+                <div class="h-[1px] w-16 bg-gradient-to-r from-transparent to-brand-gold"></div>
+                <div class="w-1.5 h-1.5 rotate-45 bg-brand-gold shadow-[0_0_5px_#C5A059]"></div>
+                <p class="text-brand-text text-sm tracking-[0.2em] uppercase">Roleplay Profiles</p>
+                <div class="w-1.5 h-1.5 rotate-45 bg-brand-gold shadow-[0_0_5px_#C5A059]"></div>
+                <div class="h-[1px] w-16 bg-gradient-to-l from-transparent to-brand-gold"></div>
+            </div>
+        </header>
+
+        <!-- キャラクター一覧グリッド -->
+        <div id="character-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
+            <!-- JSで動的に生成されます -->
+        </div>
+    </div>
+
+    <!-- モーダルウィンドウ（初期状態は非表示） -->
+    <div id="character-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 hidden">
+        <!-- 背景のぼかしとオーバーレイ -->
+        <div id="modal-overlay" class="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-pointer transition-opacity duration-300 opacity-0"></div>
+        
+        <!-- モーダルコンテンツ -->
+        <div id="modal-content" class="relative bg-brand-card w-full max-w-5xl h-[90vh] overflow-hidden rounded-md shadow-[0_0_30px_rgba(197,160,89,0.15)] border border-brand-gold/20 flex flex-col md:flex-row transition-all duration-300 opacity-0 scale-95">
+            
+            <!-- 閉じるボタン -->
+            <button id="close-modal" class="absolute top-4 right-4 z-50 w-10 h-10 flex items-center justify-center bg-brand-darker/90 backdrop-blur-sm rounded-full text-brand-text hover:text-brand-gold hover:bg-brand-dark transition-colors duration-200 focus:outline-none border border-brand-gold/30 shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <!-- 左側：画像 (PCでは固定) -->
+            <div class="md:w-2/5 p-6 border-r border-brand-gold/10 hidden md:flex md:flex-col justify-center">
+                <div class="aspect-portrait w-full overflow-hidden rounded shadow-lg border border-brand-darker relative">
+                    <img id="modal-image-pc" src="" alt="Character Image" class="w-full h-full object-cover">
+                </div>
+            </div>
+
+            <!-- 右側：詳細情報 (スクロール領域) -->
+            <div class="w-full md:w-3/5 h-full flex-1 overflow-y-auto p-6 md:p-10 space-y-8">
+                <!-- モバイル用の画像 -->
+                <div class="md:hidden aspect-portrait w-full overflow-hidden rounded shadow-lg border border-brand-darker relative mt-10 mb-6">
+                    <img id="modal-image-mobile" src="" alt="Character Image" class="w-full h-full object-cover">
+                </div>
+
+                <!-- 名前ヘッダー -->
+                <div class="border-b border-brand-gold/30 pb-4">
+                    <h2 id="modal-name" class="text-3xl md:text-4xl font-bold text-brand-textLight">
+                        <!-- Name here -->
+                    </h2>
+                </div>
+
+                <!-- 基本情報グリッド -->
+                <div class="grid grid-cols-2 gap-4 text-sm md:text-base">
+                    <div><span class="text-brand-gold font-semibold">【性別】</span> <span id="modal-gender" class="ml-2"></span></div>
+                    <div><span class="text-brand-gold font-semibold">【種族】</span> <span id="modal-race" class="ml-2"></span></div>
+                    <div><span class="text-brand-gold font-semibold">【年齢】</span> <span id="modal-age" class="ml-2"></span></div>
+                    <div class="col-span-2"><span class="text-brand-gold font-semibold">【出身】</span> <span id="modal-origin" class="ml-2"></span></div>
+                </div>
+
+                <!-- 容姿 -->
+                <div id="modal-appearance-section">
+                    <h3 class="text-xl font-bold text-brand-gold mb-2 flex items-center">
+                        <span class="w-2 h-2 bg-brand-gold rounded-full mr-3"></span>【容姿】
+                    </h3>
+                    <p id="modal-appearance" class="text-brand-text leading-relaxed pl-5 whitespace-pre-wrap"></p>
+                </div>
+
+                <!-- 性格 -->
+                <div>
+                    <h3 class="text-xl font-bold text-brand-gold mb-2 flex items-center">
+                        <span class="w-2 h-2 bg-brand-gold rounded-full mr-3"></span>【性格】
+                    </h3>
+                    <p id="modal-personality" class="text-brand-text leading-relaxed pl-5 whitespace-pre-wrap"></p>
+                </div>
+
+                <!-- 能力 -->
+                <div>
+                    <h3 class="text-xl font-bold text-brand-gold mb-3 flex items-center">
+                        <span class="w-2 h-2 bg-brand-gold rounded-full mr-3"></span>【能力】
+                    </h3>
+                    <div id="modal-abilities" class="pl-5 space-y-4">
+                        <!-- JSで動的に追加されます -->
+                    </div>
+                </div>
+
+                <!-- 設定 -->
+                <div>
+                    <h3 class="text-xl font-bold text-brand-gold mb-2 flex items-center">
+                        <span class="w-2 h-2 bg-brand-gold rounded-full mr-3"></span>【設定】
+                    </h3>
+                    <div id="modal-background" class="text-brand-text leading-relaxed pl-5 space-y-4 whitespace-pre-wrap"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // キャラクターデータ
+        const characters = [
+            {
+                id: "claude",
+                name: "クロード・フロストウェル",
+                isR18: false,
+                image: "image/claude.png",
+                gender: "男性",
+                race: "人間",
+                age: "24",
+                appearance: "インドア派特有の青白い肌。目元には夜更かしの常習犯であることを示す薄い隈がうっすらと浮かんでいる。\n領地にいるときは弟に言われ、それらしい格好をしているが、王都に繰り出しているときは平民と同じような格好をしている。",
+                personality: "かつ快楽主義者。何より楽しいことを好む。\nが、その過程で領地のために利用できそうなモノ・コトがあれば、それを利益に変えることに対しては努力を惜しまない程度には、生まれた土地に愛着もある。",
+                abilities: [
+                    {
+                        name: "なし",
+                        category: "その他",
+                        summary: "ただし護身用に拳銃程度の大きさの火炎放射器を持っている"
+                    }
+                ],
+                origin: "ゴッド・グレイス王国（北西の山脈地帯）",
+                background: "ゴッド・グレイス王国北西に連なる山脈地帯。その地に領地をもつフロストウェル伯爵家の息子。本人の爵位は子爵。\n\n領地周辺に群れを成す魔物「火吹きの白蛇」の研究で功績を残す。火を噴く魔法と思われていた現象の実態が、「体内で燃焼する魔石の製造」と「それに耐えうる耐熱性に優れる肉体（器官）」であることを解明した。\nその魔石の抽出および、加工しやすい蛇皮に着目。厳しい寒さの中で暖を取る道具としてはもちろん、蛇皮を使ったハウス栽培と、有り余る雪を湯にしてハウス用の暖房として循環させるシステムを構築し、領地の食料自給率の大いなる向上をもたらした。\n\n……が、本人に統治をするつもりは毛頭なく、面倒な当主の座は超がつくほど真面目な弟に譲る（丸投げする）つもりでいる。彼にとっての一連の研究は、身の興味の追求から生まれた副産物に過ぎず、一生遊んで暮らすためのシステム作りになればよいと目論んでいる。\n\nまた、領地を離れ王都に繰り出しては数週間滞在し、酒を煽り、大いに語らい、朝に寝るという放蕩生活を送っている。\nただし、彼にとって酒場や歓楽街はおもしろそうな魔族についての情報収集の場でもあり、酔客や冒険者たちの噂話にはアンテナを張り巡らせている。"
+            },
+            {
+                id: "kashima",
+                name: "カシマ",
+                isR18: false,
+                image: "image/kasima.png",
+                gender: "男",
+                race: "人間、烏、狼の混血児",
+                age: "20代",
+                appearance: "人の姿に烏の翼が生えた男。狼の見目は反映されていない。\n濡烏のような黒、そして赤く燃えるような炎の双色の長髪。\n切れ長の瞳。体には幾重にも重なり、青黒く変色した無数の切り傷の痕がミミズが這い回る如くに幾重にも刻まれている。\n背中には漆黒の翼、鋭い犬歯がある。咬合力に置いては肉食系動物の亜人獣人と並びたち、狼の力をも色濃く受け継いでいる。\n普段は天草列島特有の衣服の上に、同じく天草の鎧をまとい、長刀を獲物とする。",
+                personality: "生き延びるためなら何でもする男。現在はミダスを軸足に、金で何でもする傭兵として生計を立てている。\n全ては武のため……。\n\nとはいえ、堅物というわけではなく。\n市井の人々と語らい、酒を酌み交わす姿は年相応の青年。\n武芸・任務・荒事が絡まなければ、天草の横笛を奏で、花を愛でる穏やかな心を持っている。\n\nこれはかつて、天草に残る伝承で、女装をし敵方に取り入り、舞を披露し油断をした敵軍を皆殺しにした武将の伝説からも教訓を得ているもの。\n真に軍事に強きものは、多方面の分野を学ぶ必要もあるという教育指針。\n結局、武芸しか学ばぬものには、真に窮した時に打開策が浮かばない可能性を考慮してのことである。",
+                abilities: [
+                    {
+                        name: "武の奉納",
+                        category: "加護",
+                        summary: "カグヅチの加護。\n自身に対する魔法や他者・他神からの加護による汎ゆる良い効果を一切合切打ち消す。一切のメリットは（基本的には）ない。\n新たな武の神になるため、空の座に捧げるはただ、己の武技のみ。生きながらに武神に至るための苦難の道を行くことを示すもの。\n一族の者は、神へ至るための試練と好意的に解釈しているものの、実際にはカグヅチ自身が、彼を武の頂点としその座に成り代わろうと挑む若者に課した試練。"
+                    },
+                    {
+                        name: "天涯夢心流(てんがいむじんりゅう)",
+                        category: "武技",
+                        summary: "徒手空拳から、汎ゆる武器術・兵法から馬術に至るまでを網羅した武術。\n限りなく広がる空のごとくを心に抱き、大いなる大気のうねりのよな掴みどころない防御と、しかし神風のように全てを突き崩すような一気呵成の攻撃を特徴とする。"
+                    },
+                    {
+                        name: "身体的特徴：飛行・交合",
+                        category: "種族特性",
+                        summary: "前述の通り、烏と狼の獣人の血が流れる。\n翼で戦場を飛び回り、その顎は、両手両足がもがれようと身を捩り敵の喉もとに食らいつくための奇襲用・あるいは最後の武器となる。"
+                    }
+                ],
+                origin: "天草列島 山中の隠れ村",
+                background: "かつて主流派に挑み討伐された、反逆者の一族。その末裔。\n武家に広く信奉される武神カグヅチに憎悪を抱き、新しき武神を生み出す狂気に囚われた一族の神子と称されし男である。\n人為的に天草に住む獣人たちと一族の女とをかけ合わせ、強き子を生み出す計画によって生み出された存在の内の一人。\n\n幼き頃より武芸の道に鍛えられ、虐待とも言える教育を受けてきた。\n十四才。天草の成人の儀式を終えたカシマは、しきたりによって武者修行のたびに出ることになる。\nこの武者修行の目的は、強者の千人斬り。たっぷりと血を吸わせた業物を空の座に捧げ、新たな武神ならんとする儀式。\n\n悲しきかな、その行為は無為。神の座の仕組みには何一つ瑕疵など付けられぬ、無力なカルト。\nしかしその一念、同じく武に生きる神の目には留まる。皮肉にも、打ち倒すべき相手から見初められた事により、さらなる苦難の道を生きることになる。\n\nカシマは字(あざな)。諱(いみな)はタケミカヅチ。"
+            },
+            {
+                id: "neru",
+                name: "ネル",
+                isR18: true,
+                image: "image/neru.png",
+                gender: "女",
+                race: "人間",
+                age: "成人",
+                appearance: "ミルクティー色のショートヘアに、蕩けた蜂蜜のような瞳。\n体には特別な絹糸で編まれた透けるほど薄い布をまとい、その豊かな肉体を惜しげもなく晒している。\nむせ返るほどに甘いジャスミンの香油を身にまとい、その奥、微かに漂う性の香り。\nその暴力的なまでの肉感的な体に見合わないあどけない顔つき。\n\n金の首輪や腕輪などの装飾は、主神への祝福が施された魔法金製。",
+                personality: "箱入り娘として育てられ、世間知らずで、怖いもの知らず。\n誰にでも距離感が近く、ボディタッチを含むスキンシップは基本。\n\n心根は嘘偽りない優しさに溢れており、人間・亜人・エルフ・獣人はもちろん、家畜や野生動物とまで心を通わせてしまう清らかな心の乙女。\n\n美醜年齢性別問わず、全ての生命体と温もりを分け合うことを望む博愛主義者。",
+                abilities: [
+                    {
+                        name: "命満ちる愛欲の契（Cette vie se cramponne à son abdomen et au bas de son ventre）",
+                        category: "加護",
+                        summary: "予言の子たる、愛欲の巫女である彼女にもたらされた加護。\n主神へと愛に溢れた性行為を奉納することで、傷や病を癒すことができる加護。\nその効能が十全に発揮されるためには、両者の結びつきが深ければ深いほどよい。\nただし、彼女は全てのものに対して博愛の心を持つため、彼女に対し嫌悪感を抱いていたとて一定の効果は発言する。"
+                    },
+                    {
+                        name: "ミエル・サクレ",
+                        category: "魔術",
+                        summary: "愛欲の神殿に仕える女神官にかけられた心霊魔術。\nその体液が甘く感じられ、ごく弱々しい効能の媚薬のように作用する体質となる。"
+                    },
+                    {
+                        name: "愛欲の祭壇 オテル・ドゥ・ラ・リュクシュール",
+                        category: "遺物",
+                        summary: "海辺の神殿、その一番高い場所に設けられた祭壇。\n祭壇の上にはシルクの寝具が設けられ、ジャスミンの花が敷き詰められている。\n穏やかな潮風の吹く丘の神殿。天からの視線を遮るものはなにもなく、大自然の中で愛の営みを行うための祭壇。\n\nこの祭壇から愛欲を奉納することで、愛欲に纏わる加護・魔法の効能が一層と高まる。"
+                    },
+                    {
+                        name: "ル・ヴィ・ナ・ディスクリミナスィオン・ドゥイユ",
+                        category: "魔術精製薬",
+                        summary: "ハート型の小瓶に入った、とろりとした薬。\n一時的に陰核を男性器へと変じる愛の妙薬。\n例え相手が女性であれ、あるいは男性であったとて、犯されるも犯すも彼女の愛ゆえである。\n変質する際に、軽く達してしまうほどの快感がある。"
+                    }
+                ],
+                origin: "ゴッド・グレイス王国　王都",
+                background: "【愛称】ネル\n【洗礼名】ヴィルジュ・エテルネッル\n\n花の月、喜びの日。雨降る都に、ただ一軒、陽光の差す家があるだろう。\nその日、そこに生まれた子供は主神の神意を受けし祝福された子供なり。\n―――スウェイトニウス著　『予言の書 オムニア伝』\n\n上述の一節の通りに誕生した予言の子の一人。\n愛欲の喜びを体現する為の力（加護）を持つ。\n\n彼女の治癒の力は、現在の世界情勢において冒険者等の治療にも用いられるが、\n実際としては性交における感染症や、神経性・血流性によるED、生理不順、膣痙を癒し、\nあまねく全ての市民が愛欲を享受できるようにとのものである。\n\n薄衣の神官装束は主神の祝福を肌で受けるための正装。そのため、普通の服を着込むことをどこか窮屈に感じている節がある。\n他国と比べても薄着、性的な格好をするゴッド・グレイスの都の住民に対してすら、どうして神様から授かった身体を隠してしまうのかと、無邪気に首をかしげてしまう。\n\n自身の加護によって、自身の肉体の欠損も完璧に治癒する。傷や染み一つない肉体。\nそして、だからこそ永遠の処女(ヴィルジュ・エテルネッル)と名付けられたのである。"
+            }
+        ];
+
+        // DOM要素の取得
+        const gridContainer = document.getElementById('character-grid');
+        const modal = document.getElementById('character-modal');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const modalContent = document.getElementById('modal-content');
+        const closeModalBtn = document.getElementById('close-modal');
+
+        // キャラクターカードの生成
+        function renderCharacters() {
+            characters.forEach((char, index) => {
+                const card = document.createElement('div');
+                card.className = 'char-card group cursor-pointer flex flex-col items-center';
+                
+                // R18マークの処理
+                const nameDisplay = char.isR18 
+                    ? `${char.name}<span class="r18-badge">🔞</span>` 
+                    : char.name;
+
+                // 画像用のクラス（R18の場合はホバー時の拡大をオフにし、フチ透け防止のため少しだけ拡大しておく）
+                const imgClass = char.isR18 
+                    ? "w-full h-full object-cover scale-[1.1]" 
+                    : "w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100";
+
+                // モザイク（ぼかし）用のオーバーレイレイヤー (R18のみ追加)
+                const mosaicOverlay = char.isR18
+                    ? `<div class="absolute inset-0 backdrop-blur-[24px] bg-black/10 z-10 pointer-events-none transition-opacity duration-300 group-hover:opacity-80"></div>`
+                    : "";
+
+                card.innerHTML = `
+                    <div class="char-card-img-wrapper relative w-full aspect-portrait overflow-hidden rounded shadow-[0_4px_20px_rgba(0,0,0,0.5)] mb-4 bg-brand-card">
+                        <img src="${char.image}" alt="${char.name}" class="${imgClass}">
+                        ${mosaicOverlay}
+                        <!-- カード下部のグラデーション -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-brand-darker via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-300 z-20 pointer-events-none"></div>
+                    </div>
+                    <div class="text-center w-full relative z-30">
+                        <h3 class="text-lg md:text-xl font-bold text-brand-textLight group-hover:text-brand-gold transition-colors duration-300">${nameDisplay}</h3>
+                        <div class="h-[2px] w-0 bg-brand-gold mx-auto mt-2 transition-all duration-300 group-hover:w-1/2"></div>
+                    </div>
+                `;
+
+                // クリックイベントでモーダルを開く
+                card.addEventListener('click', () => openModal(char));
+                
+                // 少しずつ遅延させて表示するアニメーション用（オプショナル）
+                card.style.animationDelay = `${index * 150}ms`;
+                
+                gridContainer.appendChild(card);
+            });
+        }
+
+        // モーダルを開く
+        function openModal(char) {
+            // データのセット
+            const nameDisplay = char.isR18 ? `${char.name}<span class="text-red-500 text-2xl ml-2 align-middle">🔞</span>` : char.name;
+            document.getElementById('modal-name').innerHTML = nameDisplay;
+            document.getElementById('modal-image-pc').src = char.image;
+            document.getElementById('modal-image-pc').alt = char.name;
+            document.getElementById('modal-image-mobile').src = char.image;
+            document.getElementById('modal-image-mobile').alt = char.name;
+            document.getElementById('modal-gender').textContent = char.gender;
+            document.getElementById('modal-race').textContent = char.race;
+            document.getElementById('modal-age').textContent = char.age;
+            document.getElementById('modal-origin').textContent = char.origin;
+            
+            // 容姿（省略対応）
+            const appearanceSection = document.getElementById('modal-appearance-section');
+            if (char.appearance) {
+                appearanceSection.style.display = 'block';
+                document.getElementById('modal-appearance').textContent = char.appearance;
+            } else {
+                appearanceSection.style.display = 'none';
+            }
+
+            document.getElementById('modal-personality').textContent = char.personality;
+            document.getElementById('modal-background').textContent = char.background;
+
+            // 能力のセット
+            const abilitiesContainer = document.getElementById('modal-abilities');
+            abilitiesContainer.innerHTML = '';
+            
+            if (char.abilities && char.abilities.length > 0) {
+                char.abilities.forEach(ability => {
+                    const abDiv = document.createElement('div');
+                    abDiv.className = 'bg-brand-darker p-4 rounded border border-brand-gold/10';
+                    abDiv.innerHTML = `
+                        <h4 class="text-lg font-bold text-brand-goldLight mb-1">『${ability.name}』</h4>
+                        <div class="text-sm text-gray-400 mb-2">分類：${ability.category}</div>
+                        <p class="text-brand-text text-sm md:text-base leading-relaxed whitespace-pre-wrap">${ability.summary}</p>
+                    `;
+                    abilitiesContainer.appendChild(abDiv);
+                });
+            } else {
+                abilitiesContainer.innerHTML = '<p class="text-brand-text">特になし</p>';
+            }
+
+            // モーダル表示アニメーション
+            modal.classList.remove('hidden');
+            // 少し遅延させてTailwindクラスを適用し、トランジションを発火させる
+            requestAnimationFrame(() => {
+                modalOverlay.classList.remove('opacity-0');
+                modalOverlay.classList.add('opacity-100');
+                
+                modalContent.classList.remove('opacity-0', 'scale-95');
+                modalContent.classList.add('opacity-100', 'scale-100');
+            });
+            
+            // 背景のスクロールロック
+            document.body.style.overflow = 'hidden';
+        }
+
+        // モーダルを閉じる
+        function closeModal() {
+            // 退出アニメーション
+            modalOverlay.classList.remove('opacity-100');
+            modalOverlay.classList.add('opacity-0');
+            
+            modalContent.classList.remove('opacity-100', 'scale-100');
+            modalContent.classList.add('opacity-0', 'scale-95');
+
+            // アニメーション完了後に非表示にする
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                // スクロールロック解除
+                document.body.style.overflow = '';
+            }, 300); // duration-300と合わせる
+        }
+
+        // イベントリスナーの登録
+        closeModalBtn.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', closeModal);
+
+        // Escapeキーで閉じる
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', renderCharacters);
+
+    </script>
+</body>
+</html>
